@@ -1,14 +1,10 @@
 #
-# Example System.ps1 - IDM System PowerShell Script for demonstration and documentation purposes.
-#
-# Any IDM System PowerShell Script is dot-sourced in a separate PowerShell context, after
-# dot-sourcing the IDM Generic PowerShell Script '../Generic.ps1'.
+# Cisco Unified CM.ps1 - Cisco Unified CM (AXL API)
 #
 
 
 $Log_MaskableKeys = @(
     # Put a comma-separated list of attribute names here, whose value should be masked before 
-    # writing to log files. Examples are:
     'Password'
 )
 
@@ -97,7 +93,6 @@ function Idm-OnUnload {
 #
 # Object CRUD functions
 #
-
 $Properties = @{
     Line = @(
         @{ name = 'uuid';                              options = @('default','key')                      }    
@@ -371,6 +366,204 @@ $Properties = @{
         @{ name = 'enableActivationID';                              options = @('default')                      }
         @{ name = 'mraServiceDomain';                              options = @('default')                      }
         @{ name = 'allowMraMode';                              options = @('default')                      }  
+    )
+    PhoneTemplate = @(
+        @{ name = 'pkid';                              options = @('default','key')                      }        
+        @{ name = 'name';                              options = @('default')                      }
+        @{ name = 'numofbuttons';                              options = @('default')                      }
+        @{ name = 'usermodifiable';                              options = @('default')                      }
+        @{ name = 'tkmodel';                              options = @('default')                      }
+        @{ name = 'tkdeviceprotocol';                              options = @('default')                      }
+        @{ name = 'privatetemplate';                              options = @('default')                      }
+        @{ name = 'versionstamp';                              options = @('default')                      }
+        @{ name = 'resettoggle';                              options = @('default')                      }
+        @{ name = 'tkreset';                              options = @('default')                      }
+    )
+    Product = @(
+        @{ name = 'enum';                              options = @('default','key')                      }        
+        @{ name = 'name';                              options = @('default')                      }
+        @{ name = 'moniker';                              options = @('default')                      }
+        @{ name = 'tkmodel';                              options = @('default')                      }
+        @{ name = 'maxports';                              options = @('default')                      }
+        @{ name = 'showindropdown';                              options = @('default')                      }
+        @{ name = 'devicenameformat';                              options = @('default')                      }
+        @{ name = 'isinstalleddefault';                              options = @('default')                      }
+        @{ name = 'devicenamestring';                              options = @('default')                      }
+    )
+    SipProfile = @(
+        @{ name = 'uuid';                              options = @('default','key')                      }            
+        @{ name = 'name';                              options = @('default')                      }
+        @{ name = 'description';                              options = @('default')                      }
+        @{ name = 'defaultTelephonyEventPayloadType';                              options = @('default')                      }
+        @{ name = 'redirectByApplication';                              options = @('default')                      }
+        @{ name = 'ringing180';                              options = @('default')                      }
+        @{ name = 'timerInvite';                              options = @('default')                      }
+        @{ name = 'timerRegisterDelta';                              options = @('default')                      }
+        @{ name = 'timerRegister';                              options = @('default')                      }
+        @{ name = 'timerT1';                              options = @('default')                      }
+        @{ name = 'timerT2';                              options = @('default')                      }
+        @{ name = 'retryInvite';                              options = @('default')                      }
+        @{ name = 'retryNotInvite';                              options = @('default')                      }
+        @{ name = 'startMediaPort';                              options = @('default')                      }
+        @{ name = 'stopMediaPort';                              options = @('default')                      }
+        @{ name = 'callpickupListUri';                              options = @('default')                      }
+        @{ name = 'callpickupGroupUri';                              options = @('default')                      }
+        @{ name = 'meetmeServiceUrl';                              options = @('default')                      }
+        @{ name = 'userInfo';                              options = @('default')                      }
+        @{ name = 'dtmfDbLevel';                              options = @('default')                      }
+        @{ name = 'callHoldRingback';                              options = @('default')                      }
+        @{ name = 'anonymousCallBlock';                              options = @('default')                      }
+        @{ name = 'callerIdBlock';                              options = @('default')                      }
+        @{ name = 'dndControl';                              options = @('default')                      }
+        @{ name = 'telnetLevel';                              options = @('default')                      }
+        @{ name = 'timerKeepAlive';                              options = @('default')                      }
+        @{ name = 'timerSubscribe';                              options = @('default')                      }
+        @{ name = 'timerSubscribeDelta';                              options = @('default')                      }
+        @{ name = 'maxRedirects';                              options = @('default')                      }
+        @{ name = 'timerOffHookToFirstDigit';                              options = @('default')                      }
+        @{ name = 'callForwardUri';                              options = @('default')                      }
+        @{ name = 'abbreviatedDialUri';                              options = @('default')                      }
+        @{ name = 'confJointEnable';                              options = @('default')                      }
+        @{ name = 'rfc2543Hold';                              options = @('default')                      }
+        @{ name = 'semiAttendedTransfer';                              options = @('default')                      }
+        @{ name = 'enableVad';                              options = @('default')                      }
+        @{ name = 'stutterMsgWaiting';                              options = @('default')                      }
+        @{ name = 'callStats';                              options = @('default')                      }
+        @{ name = 't38Invite';                              options = @('default')                      }
+        @{ name = 'faxInvite';                              options = @('default')                      }
+        @{ name = 'rerouteIncomingRequest';                              options = @('default')                      }
+        @{ name = 'resourcePriorityNamespaceListName';                              options = @('default')                      }
+        @{ name = 'enableAnatForEarlyOfferCalls';                              options = @('default')                      }
+        @{ name = 'rsvpOverSip';                              options = @('default')                      }
+        @{ name = 'fallbackToLocalRsvp';                              options = @('default')                      }
+        @{ name = 'sipRe11XxEnabled';                              options = @('default')                      }
+        @{ name = 'gClear';                              options = @('default')                      }
+        @{ name = 'sendRecvSDPInMidCallInvite';                              options = @('default')                      }
+        @{ name = 'enableOutboundOptionsPing';                              options = @('default')                      }
+        @{ name = 'optionsPingIntervalWhenStatusOK';                              options = @('default')                      }
+        @{ name = 'optionsPingIntervalWhenStatusNotOK';                              options = @('default')                      }
+        @{ name = 'deliverConferenceBridgeIdentifier';                              options = @('default')                      }
+        @{ name = 'sipOptionsRetryCount';                              options = @('default')                      }
+        @{ name = 'sipOptionsRetryTimer';                              options = @('default')                      }
+        @{ name = 'sipBandwidthModifier';                              options = @('default')                      }
+        @{ name = 'enableUriOutdialSupport';                              options = @('default')                      }
+        @{ name = 'userAgentServerHeaderInfo';                              options = @('default')                      }
+        @{ name = 'allowPresentationSharingUsingBfcp';                              options = @('default')                      }
+        @{ name = 'scriptParameters';                              options = @('default')                      }
+        @{ name = 'isScriptTraceEnabled';                              options = @('default')                      }
+        @{ name = 'sipNormalizationScript';                              options = @('default')                      }
+        @{ name = 'allowiXApplicationMedia';                              options = @('default')                      }
+        @{ name = 'dialStringInterpretation';                              options = @('default')                      }
+        @{ name = 'acceptAudioCodecPreferences';                              options = @('default')                      }
+        @{ name = 'mlppUserAuthorization';                              options = @('default')                      }
+        @{ name = 'isAssuredSipServiceEnabled';                              options = @('default')                      }
+        @{ name = 'resourcePriorityNamespace';                              options = @('default')                      }
+        @{ name = 'useCallerIdCallerNameinUriOutgoingRequest';                              options = @('default')                      }
+        @{ name = 'callingLineIdentification';                              options = @('default')                      }
+        @{ name = 'rejectAnonymousIncomingCall';                              options = @('default')                      }
+        @{ name = 'callpickupUri';                              options = @('default')                      }
+        @{ name = 'rejectAnonymousOutgoingCall';                              options = @('default')                      }
+        @{ name = 'videoCallTrafficClass';                              options = @('default')                      }
+        @{ name = 'sdpTransparency';                              options = @('default')                      }
+        @{ name = 'allowMultipleCodecs';                              options = @('default')                      }
+        @{ name = 'sipSessionRefreshMethod';                              options = @('default')                      }
+        @{ name = 'earlyOfferSuppVoiceCall';                              options = @('default')                      }
+        @{ name = 'cucmVersionInSipHeader';                              options = @('default')                      }
+        @{ name = 'confidentialAccessLevelHeaders';                              options = @('default')                      }
+        @{ name = 'destRouteString';                              options = @('default')                      }
+        @{ name = 'inactiveSDPRequired';                              options = @('default')                      }
+        @{ name = 'allowRRAndRSBandwidthModifier';                              options = @('default')                      }
+    )
+    UniversalDeviceTemplate = @(
+        @{ name = 'uuid';                              options = @('default','key')                      }                
+        @{ name = 'name';                              options = @('default')                      }
+        @{ name = 'deviceDescription';                              options = @('default')                      }
+        @{ name = 'devicePool';                              options = @('default')                      }
+        @{ name = 'deviceSecurityProfile';                              options = @('default')                      }
+        @{ name = 'sipProfile';                              options = @('default')                      }
+        @{ name = 'phoneButtonTemplate';                              options = @('default')                      }
+        @{ name = 'sipDialRules';                              options = @('default')                      }
+        @{ name = 'callingSearchSpace';                              options = @('default')                      }
+        @{ name = 'callingPartyTransformationCSSForInboundCalls';                              options = @('default')                      }
+        @{ name = 'callingPartyTransformationCSSForOutboundCalls';                              options = @('default')                      }
+        @{ name = 'reroutingCallingSearchSpace';                              options = @('default')                      }
+        @{ name = 'subscribeCallingSearchSpaceName';                              options = @('default')                      }
+        @{ name = 'useDevicePoolCallingPartyTransformationCSSforInboundCalls';                              options = @('default')                      }
+        @{ name = 'useDevicePoolCallingPartyTransformationCSSforOutboundCalls';                              options = @('default')                      }
+        @{ name = 'commonPhoneProfile';                              options = @('default')                      }
+        @{ name = 'commonDeviceConfiguration';                              options = @('default')                      }
+        @{ name = 'softkeyTemplate';                              options = @('default')                      }
+        @{ name = 'featureControlPolicy';                              options = @('default')                      }
+        @{ name = 'phonePersonalization';                              options = @('default')                      }
+        @{ name = 'mtpPreferredOriginatingCodec';                              options = @('default')                      }
+        @{ name = 'outboundCallRollover';                              options = @('default')                      }
+        @{ name = 'mediaTerminationPointRequired';                              options = @('default')                      }
+        @{ name = 'unattendedPort';                              options = @('default')                      }
+        @{ name = 'requiredDtmfReception';                              options = @('default')                      }
+        @{ name = 'rfc2833Disabled';                              options = @('default')                      }
+        @{ name = 'useTrustedRelayPoint';                              options = @('default')                      }
+        @{ name = 'protectedDevice';                              options = @('default')                      }
+        @{ name = 'certificateOperation';                              options = @('default')                      }
+        @{ name = 'authenticationMode';                              options = @('default')                      }
+        @{ name = 'authenticationString';                              options = @('default')                      }
+        @{ name = 'keySize';                              options = @('default')                      }
+        @{ name = 'keyOrder';                              options = @('default')                      }
+        @{ name = 'ecKeySize';                              options = @('default')                      }
+        @{ name = 'servicesProvisioning';                              options = @('default')                      }
+        @{ name = 'packetCaptureMode';                              options = @('default')                      }
+        @{ name = 'packetCaptureDuration';                              options = @('default')                      }
+        @{ name = 'secureShellUser';                              options = @('default')                      }
+        @{ name = 'secureShellPassword';                              options = @('default')                      }
+        @{ name = 'userLocale';                              options = @('default')                      }
+        @{ name = 'networkLocale';                              options = @('default')                      }
+        @{ name = 'mlppDomain';                              options = @('default')                      }
+        @{ name = 'mlppIndication';                              options = @('default')                      }
+        @{ name = 'mlppPreemption';                              options = @('default')                      }
+        @{ name = 'doNotDisturb';                              options = @('default')                      }
+        @{ name = 'dndOption';                              options = @('default')                      }
+        @{ name = 'dndIncomingCallAlert';                              options = @('default')                      }
+        @{ name = 'aarGroup';                              options = @('default')                      }
+        @{ name = 'aarCallingSearchSpace';                              options = @('default')                      }
+        @{ name = 'blfPresenceGroup';                              options = @('default')                      }
+        @{ name = 'blfAudibleAlertSettingPhoneBusy';                              options = @('default')                      }
+        @{ name = 'blfAudibleAlertSettingPhoneIdle';                              options = @('default')                      }
+        @{ name = 'userHoldMohAudioSource';                              options = @('default')                      }
+        @{ name = 'networkHoldMohAudioSource';                              options = @('default')                      }
+        @{ name = 'location';                              options = @('default')                      }
+        @{ name = 'geoLocation';                              options = @('default')                      }
+        @{ name = 'deviceMobilityMode';                              options = @('default')                      }
+        @{ name = 'mediaResourceGroupList';                              options = @('default')                      }
+        @{ name = 'remoteDevice';                              options = @('default')                      }
+        @{ name = 'hotlineDevice';                              options = @('default')                      }
+        @{ name = 'retryVideoCallAsAudio';                              options = @('default')                      }
+        @{ name = 'requireOffPremiseLocation';                              options = @('default')                      }
+        @{ name = 'ownerUserId';                              options = @('default')                      }
+        @{ name = 'mobilityUserId';                              options = @('default')                      }
+        @{ name = 'joinAcrossLines';                              options = @('default')                      }
+        @{ name = 'alwaysUsePrimeLine';                              options = @('default')                      }
+        @{ name = 'alwaysUsePrimeLineForVoiceMessage';                              options = @('default')                      }
+        @{ name = 'singleButtonBarge';                              options = @('default')                      }
+        @{ name = 'builtInBridge';                              options = @('default')                      }
+        @{ name = 'allowControlOfDeviceFromCti';                              options = @('default')                      }
+        @{ name = 'ignorePresentationIndicators';                              options = @('default')                      }
+        @{ name = 'enableExtensionMobility';                              options = @('default')                      }
+        @{ name = 'privacy';                              options = @('default')                      }
+        @{ name = 'loggedIntoHuntGroup';                              options = @('default')                      }
+        @{ name = 'proxyServer';                              options = @('default')                      }
+        @{ name = 'servicesUrl';                              options = @('default')                      }
+        @{ name = 'idle';                              options = @('default')                      }
+        @{ name = 'idleTimer';                              options = @('default')                      }
+        @{ name = 'secureDirUrl';                              options = @('default')                      }
+        @{ name = 'messages';                              options = @('default')                      }
+        @{ name = 'secureIdleUrl';                              options = @('default')                      }
+        @{ name = 'authenticationServer';                              options = @('default')                      }
+        @{ name = 'directory';                              options = @('default')                      }
+        @{ name = 'secureServicesUrl';                              options = @('default')                      }
+        @{ name = 'information';                              options = @('default')                      }
+        @{ name = 'secureMessagesUrl';                              options = @('default')                      }
+        @{ name = 'secureInformationUrl';                              options = @('default')                      }
+        @{ name = 'secureAuthenticationUrl';                              options = @('default')                      }
+        @{ name = 'confidentialAccess';                              options = @('default')                      }
     )
 }
 
@@ -917,6 +1110,417 @@ function Idm-PhonesRead {
                 $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "listPhone" -SoapBody $xmlRequest
       
                 foreach($item in $response.Envelope.Body.listPhoneResponse.return.phone )
+                {
+                    ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
+function Idm-PhoneTemplatesRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "PhoneTemplate"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                   <ns:executeSQLQuery>
+                      <sql>select * from phonetemplate</sql>
+                   </ns:executeSQLQuery>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLQuery" -SoapBody $xmlRequest
+      
+                foreach($item in $response.Envelope.Body.executeSQLQueryResponse.return.row )
+                {
+                    ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
+function Idm-ProductsRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "Product"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                   <ns:executeSQLQuery>
+                      <sql>SELECT * FROM typeproduct</sql>
+                   </ns:executeSQLQuery>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLQuery" -SoapBody $xmlRequest
+      
+                foreach($item in $response.Envelope.Body.executeSQLQueryResponse.return.row )
+                {
+                    ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
+function Idm-SipProfilesRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "SipProfile"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <ns:listSipProfile>
+                        <searchCriteria>           
+                            <name>%</name>
+                        </searchCriteria>
+                        <returnedTags>            
+                            <name/>
+                            <description/>
+                            <defaultTelephonyEventPayloadType/>
+                            <redirectByApplication/>
+                            <ringing180/>
+                            <timerInvite/>
+                            <timerRegisterDelta/>
+                            <timerRegister/>
+                            <timerT1/>
+                            <timerT2/>
+                            <retryInvite/>
+                            <retryNotInvite/>
+                            <startMediaPort/>
+                            <stopMediaPort/>
+                            <callpickupListUri/>
+                            <callpickupGroupUri/>
+                            <meetmeServiceUrl/>
+                            <userInfo/>
+                            <dtmfDbLevel/>
+                            <callHoldRingback/>
+                            <anonymousCallBlock/>
+                            <callerIdBlock/>
+                            <dndControl/>
+                            <telnetLevel/>
+                            <timerKeepAlive/>
+                            <timerSubscribe/>
+                            <timerSubscribeDelta/>
+                            <maxRedirects/>
+                            <timerOffHookToFirstDigit/>
+                            <callForwardUri/>
+                            <abbreviatedDialUri/>
+                            <confJointEnable/>
+                            <rfc2543Hold/>
+                            <semiAttendedTransfer/>
+                            <enableVad/>
+                            <stutterMsgWaiting/>
+                            <callStats/>
+                            <t38Invite/>
+                            <rerouteIncomingRequest/>
+                            <resourcePriorityNamespaceListName/>
+                            <enableAnatForEarlyOfferCalls/>
+                            <rsvpOverSip/>
+                            <fallbackToLocalRsvp/>
+                            <sipRe11XxEnabled/>
+                            <gClear/>
+                            <sendRecvSDPInMidCallInvite/>
+                            <enableOutboundOptionsPing/>
+                            <optionsPingIntervalWhenStatusOK/>
+                            <optionsPingIntervalWhenStatusNotOK/>
+                            <deliverConferenceBridgeIdentifier/>
+                            <sipOptionsRetryCount/>
+                            <sipOptionsRetryTimer/>
+                            <sipBandwidthModifier/>
+                            <enableUriOutdialSupport/>
+                            <userAgentServerHeaderInfo/>
+                            <allowPresentationSharingUsingBfcp/>
+                            <scriptParameters/>
+                            <isScriptTraceEnabled/>
+                            <sipNormalizationScript/>
+                            <allowiXApplicationMedia/>
+                            <dialStringInterpretation/>
+                            <acceptAudioCodecPreferences/>
+                            <mlppUserAuthorization/>
+                            <isAssuredSipServiceEnabled/>
+                            <resourcePriorityNamespace/>
+                            <useCallerIdCallerNameinUriOutgoingRequest/>
+                            <callingLineIdentification/>
+                            <rejectAnonymousIncomingCall/>
+                            <callpickupUri/>
+                            <rejectAnonymousOutgoingCall/>
+                            <videoCallTrafficClass/>
+                            <sdpTransparency/>
+                            <allowMultipleCodecs/>
+                            <sipSessionRefreshMethod/>
+                            <earlyOfferSuppVoiceCall/>
+                            <cucmVersionInSipHeader/>
+                            <confidentialAccessLevelHeaders/>
+                            <destRouteString/>
+                            <inactiveSDPRequired/>
+                        </returnedTags>
+                    </ns:listSipProfile>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "listSipProfile" -SoapBody $xmlRequest
+      
+                foreach($item in $response.Envelope.Body.listSipProfileResponse.return.sipProfile )
+                {
+                    ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
+function Idm-UniversalDeviceTemplatesRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "UniversalDeviceTemplate"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <ns:listUniversalDeviceTemplate sequence="?">
+                    <searchCriteria>
+                        <name>%</name>
+                    </searchCriteria>
+                    <returnedTags>
+                    <name>?</name>
+                    <deviceDescription>?</deviceDescription>
+                    <devicePool>?</devicePool>
+                    <deviceSecurityProfile>?</deviceSecurityProfile>
+                    <sipProfile>?</sipProfile>
+                    <phoneButtonTemplate>?</phoneButtonTemplate>
+                    <sipDialRules>?</sipDialRules>
+                    <callingSearchSpace>?</callingSearchSpace>
+                    <callingPartyTransformationCSSForInboundCalls>?</callingPartyTransformationCSSForInboundCalls>
+                    <callingPartyTransformationCSSForOutboundCalls>?</callingPartyTransformationCSSForOutboundCalls>
+                    <reroutingCallingSearchSpace>?</reroutingCallingSearchSpace>
+                    <subscribeCallingSearchSpaceName>?</subscribeCallingSearchSpaceName>
+                    <useDevicePoolCallingPartyTransformationCSSforInboundCalls>?</useDevicePoolCallingPartyTransformationCSSforInboundCalls>
+                    <useDevicePoolCallingPartyTransformationCSSforOutboundCalls>?</useDevicePoolCallingPartyTransformationCSSforOutboundCalls>
+                    <commonPhoneProfile>?</commonPhoneProfile>
+                    <commonDeviceConfiguration>?</commonDeviceConfiguration>
+                    <softkeyTemplate>?</softkeyTemplate>
+                    <featureControlPolicy>?</featureControlPolicy>
+                    <phonePersonalization>?</phonePersonalization>
+                    <mtpPreferredOriginatingCodec>?</mtpPreferredOriginatingCodec>
+                    <outboundCallRollover>?</outboundCallRollover>
+                    <mediaTerminationPointRequired>?</mediaTerminationPointRequired>
+                    <unattendedPort>?</unattendedPort>
+                    <requiredDtmfReception>?</requiredDtmfReception>
+                    <rfc2833Disabled>?</rfc2833Disabled>
+                    <useTrustedRelayPoint>?</useTrustedRelayPoint>
+                    <protectedDevice>?</protectedDevice>
+                    <authenticationMode>?</authenticationMode>
+                    <authenticationString>?</authenticationString>
+                    <keySize>?</keySize>
+                    <servicesProvisioning>?</servicesProvisioning>
+                    <packetCaptureMode>?</packetCaptureMode>
+                    <packetCaptureDuration>?</packetCaptureDuration>
+                    <secureShellUser>?</secureShellUser>
+                    <secureShellPassword>?</secureShellPassword>
+                    <userLocale>?</userLocale>
+                    <networkLocale>?</networkLocale>
+                    <mlppDomain>?</mlppDomain>
+                    <mlppIndication>?</mlppIndication>
+                    <mlppPreemption>?</mlppPreemption>
+                    <doNotDisturb>?</doNotDisturb>
+                    <dndOption>?</dndOption>
+                    <dndIncomingCallAlert>?</dndIncomingCallAlert>
+                    <aarGroup>?</aarGroup>
+                    <aarCallingSearchSpace>?</aarCallingSearchSpace>
+                    <blfPresenceGroup>?</blfPresenceGroup>
+                    <blfAudibleAlertSettingPhoneBusy>?</blfAudibleAlertSettingPhoneBusy>
+                    <blfAudibleAlertSettingPhoneIdle>?</blfAudibleAlertSettingPhoneIdle>
+                    <userHoldMohAudioSource>?</userHoldMohAudioSource>
+                    <networkHoldMohAudioSource>?</networkHoldMohAudioSource>
+                    <location>?</location>
+                    <geoLocation>?</geoLocation>
+                    <deviceMobilityMode>?</deviceMobilityMode>
+                    <mediaResourceGroupList>?</mediaResourceGroupList>
+                    <remoteDevice>?</remoteDevice>
+                    <hotlineDevice>?</hotlineDevice>
+                    <retryVideoCallAsAudio>?</retryVideoCallAsAudio>
+                    <requireOffPremiseLocation>?</requireOffPremiseLocation>
+                    <ownerUserId>?</ownerUserId>
+                    <mobilityUserId>?</mobilityUserId>
+                    <joinAcrossLines>?</joinAcrossLines>
+                    <alwaysUsePrimeLine>?</alwaysUsePrimeLine>
+                    <alwaysUsePrimeLineForVoiceMessage>?</alwaysUsePrimeLineForVoiceMessage>
+                    <singleButtonBarge>?</singleButtonBarge>
+                    <builtInBridge>?</builtInBridge>
+                    <allowControlOfDeviceFromCti>?</allowControlOfDeviceFromCti>
+                    <ignorePresentationIndicators>?</ignorePresentationIndicators>
+                    <enableExtensionMobility>?</enableExtensionMobility>
+                    <recordingOptions>?</recordingOptions>
+                    <privacy>?</privacy>
+                    <loggedIntoHuntGroup>?</loggedIntoHuntGroup>
+                    <proxyServer>?</proxyServer>
+                    <servicesUrl>?</servicesUrl>
+                    <idle>?</idle>
+                    <idleTimer>?</idleTimer>
+                    <secureDirUrl>?</secureDirUrl>
+                    <messages>?</messages>
+                    <secureIdleUrl>?</secureIdleUrl>
+                    <authenticationServer>?</authenticationServer>
+                    <directory>?</directory>
+                    <secureServicesUrl>?</secureServicesUrl>
+                    <information>?</information>
+                    <secureMessagesUrl>?</secureMessagesUrl>
+                    <secureInformationUrl>?</secureInformationUrl>
+                    <secureAuthenticationUrl>?</secureAuthenticationUrl>
+                    <externalPhoneNumber>?</externalPhoneNumber>
+                    <audibleMsgWaitingicatorPolicy>?</audibleMsgWaitingicatorPolicy>
+                    <logMissedCalls>?</logMissedCalls>
+                    <visualMsgWaitingIndicatorPolicy>?</visualMsgWaitingIndicatorPolicy>
+                    <lineLabel>?</lineLabel>
+                    <displayCallerId>?</displayCallerId>
+                    <MaxNumberOfCalls>?</MaxNumberOfCalls>
+                    <ringSettingWhenPhoneIdle>?</ringSettingWhenPhoneIdle>
+                    <busyTrigger>?</busyTrigger>
+                    <ringSettingWhenPhoneInUse>?</ringSettingWhenPhoneInUse>
+                    <directoryNumber>?</directoryNumber>
+                    <recordingProfile>?</recordingProfile>
+                    <callPickupGroupAudioAlertSettingPhoneActive>?</callPickupGroupAudioAlertSettingPhoneActive>
+                    <callPickupGroupAudioAlertSettingPhoneIdle>?</callPickupGroupAudioAlertSettingPhoneIdle>
+                    <monitoringCallingSearchSpace>?</monitoringCallingSearchSpace>
+                    <confidentialAccess>
+                        <confidentialAccessMode>?</confidentialAccessMode>
+                        <confidentialAccessLevel>?</confidentialAccessLevel>
+                    </confidentialAccess>
+                    </returnedTags>
+                </ns:listUniversalDeviceTemplate>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "listUniversalDeviceTemplate" -SoapBody $xmlRequest
+      
+                foreach($item in $response.Envelope.Body.listUniversalDeviceTemplateResponse.return.universalDeviceTemplate )
                 {
                     ($item | ConvertTo-FlatObject) | Select-Object $properties                 
                 }
