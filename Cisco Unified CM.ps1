@@ -59,6 +59,52 @@ function Idm-SystemInfo {
                 value = '14.0'
             }
             @{
+                name = 'use_proxy'
+                type = 'checkbox'
+                label = 'Use Proxy'
+                description = 'Use Proxy server for requets'
+                value = $false                  # Default value of checkbox item
+            }
+            @{
+                name = 'proxy_address'
+                type = 'textbox'
+                label = 'Proxy Address'
+                description = 'Address of the proxy server'
+                value = 'http://localhost:8888'
+                disabled = '!use_proxy'
+                hidden = '!use_proxy'
+            }
+            @{
+                name = 'use_proxy_credentials'
+                type = 'checkbox'
+                label = 'Use Proxy'
+                description = 'Use Proxy server for requets'
+                value = $false
+                disabled = '!use_proxy'
+                hidden = '!use_proxy'
+            }
+            @{
+                name = 'proxy_username'
+                type = 'textbox'
+                label = 'Proxy Username'
+                label_indent = $true
+                description = 'Username account'
+                value = ''
+                disabled = '!use_proxy_credentials'
+                hidden = '!use_proxy_credentials'
+            }
+            @{
+                name = 'proxy_password'
+                type = 'textbox'
+                password = $true
+                label = 'Proxy Password'
+                label_indent = $true
+                description = 'User account password'
+                value = ''
+                disabled = '!use_proxy_credentials'
+                hidden = '!use_proxy_credentials'
+            }
+            @{
                 name = 'nr_of_sessions'
                 type = 'textbox'
                 label = 'Max. number of simultaneous sessions'
@@ -160,6 +206,17 @@ $Properties = @{
         @{ name = 'vpnProfileName';                              options = @('default')                      }
         @{ name = 'featureControlPolicy';                              options = @('default')                      }
     )
+    Device = @(
+    @{ name = 'pkid';                              options = @('default','key')                      }            
+        @{ name = 'name';                              options = @('default')                      }        
+        @{ name = 'description';                              options = @('default')                      }        
+        @{ name = 'tkmodel';                              options = @('default')                      }
+        @{ name = 'tkclass';                              options = @('default')                      }        
+        @{ name = 'tkproduct';                              options = @('default')                      }        
+        @{ name = 'fklocation';                              options = @('default')                      }        
+        @{ name = 'fkenduser';                              options = @('default')                      }        
+        @{ name = 'isactive';                              options = @('default')                      }        
+    )
     DevicePool = @(
         @{ name = 'uuid';                              options = @('default','key')                      }        
         @{ name = 'name';                              options = @('default')                      }
@@ -218,6 +275,24 @@ $Properties = @{
         @{ name = 'imeEnrolledPatternGroupName';                              options = @('default')                      }
         @{ name = 'localRouteGroup';                              options = @('default')                      }
         @{ name = 'mraServiceDomain';                              options = @('default')                      }
+    )
+    EndUser = @(
+        @{ name = 'pkid';                              options = @('default','key')                      }        
+        @{ name = 'firstname';                              options = @('default')                      }
+        @{ name = 'middlename';                              options = @('default')                      }
+        @{ name = 'lastname';                              options = @('default')                      }
+        @{ name = 'userid';                              options = @('default')                      }
+        @{ name = 'status';                              options = @('default')                      }
+        @{ name = 'uniqueidentifier';                              options = @('default')                      }
+       
+    )
+    EndUserDevice = @(
+        @{ name = 'userpkid';                              options = @('default')                      }            
+        @{ name = 'userguid';                              options = @('default')                      }        
+        @{ name = 'userid';                              options = @('default')                      }        
+        @{ name = 'name';                              options = @('default')                      }
+        @{ name = 'devicepkid';                              options = @('default')                      }        
+        @{ name = 'deviceguid';                              options = @('default')                      }        
     )
     Location = @(
         @{ name = 'uuid';                              options = @('default','key')                      }        
@@ -306,7 +381,8 @@ $Properties = @{
         @{ name = 'builtInBridgeStatus';                              options = @('default')                      }
         @{ name = 'callInfoPrivacyStatus';                              options = @('default')                      }
         @{ name = 'hlogStatus';                              options = @('default')                      }
-        @{ name = 'ownerUserName';                              options = @('default')                      }
+        @{ name = 'ownerUserName_uuid';                              options = @('default')                      }
+        @{ name = 'ownerUserName_{#text}';                              options = @('default')                      }
         @{ name = 'ignorePresentationIndicators';                              options = @('default')                      }
         @{ name = 'packetCaptureMode';                              options = @('default')                      }
         @{ name = 'packetCaptureDuration';                              options = @('default')                      }
@@ -366,6 +442,18 @@ $Properties = @{
         @{ name = 'enableActivationID';                              options = @('default')                      }
         @{ name = 'mraServiceDomain';                              options = @('default')                      }
         @{ name = 'allowMraMode';                              options = @('default')                      }  
+        
+    )
+    PhoneLine = @(
+        @{ name = 'uuid';                              options = @('default','key')                      }        
+        @{ name = 'index';                              options = @('default')                      }
+        @{ name = 'label';                              options = @('default')                      }
+        @{ name = 'display';                              options = @('default')                      }
+        @{ name = 'dirn_uuid';                              options = @('default')                      }
+        @{ name = 'dirn_pattern';                              options = @('default')                      }
+        @{ name = 'dirn_routePartitionName';                              options = @('default')                      }
+        @{ name = 'e164Mask';                              options = @('default')                      }
+        @{ name = 'phone_uuid';                              options = @('default')                      }
     )
     PhoneTemplate = @(
         @{ name = 'pkid';                              options = @('default','key')                      }        
@@ -754,6 +842,61 @@ function Idm-CommonPhoneConfigRead {
     Log info "Done"
 }
 
+function Idm-DevicesRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "Device"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                   <ns:executeSQLQuery>
+                      <sql>select pkid,name,description,tkmodel,tkclass,tkproduct,fklocation,fkenduser,isactive from device</sql>
+                   </ns:executeSQLQuery>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLQuery" -SoapBody $xmlRequest
+      
+                foreach($item in $response.Envelope.Body.executeSQLQueryResponse.return.row )
+                {
+                    ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
 function Idm-DevicePoolsRead {
     param (
         [switch] $GetMeta,
@@ -854,6 +997,125 @@ function Idm-DevicePoolsRead {
                 foreach($item in $response.Envelope.Body.listDevicePoolResponse.return.devicePool )
                 {
                     ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
+
+function Idm-EndUsersRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "EndUser"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                   <ns:executeSQLQuery>
+                      <sql>select pkid,firstname,middlename,lastname,userid,status,uniqueidentifier from enduser</sql>
+                   </ns:executeSQLQuery>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLQuery" -SoapBody $xmlRequest
+      
+                foreach($item in $response.Envelope.Body.executeSQLQueryResponse.return.row )
+                {
+                    ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
+function Idm-EndUserDevicesRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "EndUserDevice"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                   <ns:executeSQLQuery>
+                      <sql>select enduser.pkid userpkid, enduser.userid, device.name, device.pkid devicepkid from enduser,device,enduserdevicemap
+                      where enduserdevicemap.fkenduser=enduser.pkid and enduserdevicemap.fkdevice=device.pkid</sql>
+                   </ns:executeSQLQuery>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLQuery" -SoapBody $xmlRequest
+      
+                foreach($item in $response.Envelope.Body.executeSQLQueryResponse.return.row )
+                {
+                    [PSCustomObject]@{
+                        userpkid = $item.userpkid
+                        userguid = "{$($item.userpkid)}"
+                        userid = $item.userid
+                        name = $item.name
+                        devicepkid = $item.devicepkid
+                        deviceguid = "{$($item.devicepkid)}"
+                    }
                 }
 
             }
@@ -1102,16 +1364,17 @@ function Idm-PhonesRead {
                          <product/>
                          <model/>
                          <class/>
+                         <ownerUserName uuid="?">?</ownerUserName>
                       </returnedTags>
                    </ns:listPhone>
                 </soapenv:Body>
              </soapenv:Envelope>' -f $system_params.version
                 
                 $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "listPhone" -SoapBody $xmlRequest
-      
+                
                 foreach($item in $response.Envelope.Body.listPhoneResponse.return.phone )
                 {
-                    ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+                    ($item | ConvertTo-FlatObject) | Select-Object $properties            
                 }
 
             }
@@ -1123,6 +1386,135 @@ function Idm-PhonesRead {
 
     Log info "Done"
 }
+
+function Idm-PhoneLinesRead {
+    param (
+        [switch] $GetMeta,
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    $Class = "PhoneLine"
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+
+        Get-ClassMetaData -SystemParams $SystemParams -Class $Class
+    }
+    else {
+        $system_params   = ConvertFrom-Json2 $SystemParams
+        $function_params = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.properties
+
+        if ($properties.length -eq 0) {
+            $properties = ($Global:Properties.$Class | Where-Object { $_.options.Contains('default') }).name           
+        }
+
+        # Assure key is the first column
+        $key = ($Global:Properties.$Class | Where-Object { $_.options.Contains('key') }).name
+        $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
+
+        try { 
+                Log info "Gathering phones for line retrieval"
+                # Get Phone UUID's
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                <soapenv:Header/>
+                <soapenv:Body>
+                <ns:listPhone>
+                    <searchCriteria>
+                        <name>%</name>
+                    </searchCriteria>
+                    <returnedTags>
+                    </returnedTags>
+                </ns:listPhone>
+                </soapenv:Body>
+             </soapenv:Envelope>' -f $system_params.version
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "listPhone" -SoapBody $xmlRequest
+                
+                $phoneList = [System.Collections.ArrayList]@();
+
+                foreach($item in $response.Envelope.Body.listPhoneResponse.return.phone )
+                {
+                    $phone = ($item | ConvertTo-FlatObject) | Select-Object uuid
+                    [void]$phoneList.Add($phone)
+                }
+
+                # Get Phone Lines for each phone
+                $_i = 0
+                $now = Get-Date
+                foreach($phone in $phoneList)
+                {
+                    try {
+                    if(($_i++ % 100) -eq 0)
+                    {
+                        Log info ('Retrieving Phone Lines: ({0}/{1}) {2:n1} s...' -f $_i,$phoneList.count,((Get-Date) - $now).TotalSeconds)
+                    }
+                    
+                    $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                        <soapenv:Header/>
+                        <soapenv:Body>
+                        <ns:getPhone>
+                            <uuid>{1}</uuid>
+                            <returnedTags>
+                            <name>?</name>
+                            <description>?</description>
+                            <model>?</model>
+                            <class>?</class>
+                            <lines>
+                                <!--Zero or more repetitions:-->
+                                <line ctiid="?" uuid="?">
+                                    <index>?</index>
+                                    <label>?</label>
+                                    <display>?</display>
+                                    <dirn uuid="?">
+                                        <pattern>?</pattern>
+                                        <routePartitionName uuid="?">?</routePartitionName>
+                                    </dirn>
+                                    <e164Mask>?</e164Mask>
+                                </line>
+                            </lines>
+                            <ownerUserName uuid="?">?</ownerUserName>
+                            </returnedTags>
+                        </ns:getPhone>
+                        </soapenv:Body>
+                    </soapenv:Envelope>' -f $system_params.version, $phone.uuid
+                    
+                    $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "getPhone" -SoapBody $xmlRequest
+                    
+                    #$item = $response.Envelope.Body.getPhoneResponse.return.phone.lines.line
+                    $lines = $response.Envelope.Body.getPhoneResponse.return.phone.lines.line
+
+                    foreach($item in $lines) {
+                        $converted = ($item | ConvertTo-FlatObject) | Select-Object $properties
+                        $hash_table = [ordered]@{}
+                        
+                        foreach ($column_name in $properties) {
+                            $hash_table[$column_name] = $converted.$column_name
+                        }
+                        
+                        $hash_table["phone_uuid"] = $phone.uuid
+                        
+                        # Output data
+                        New-Object -TypeName PSObject -Property $hash_table
+                    }
+                } catch { 
+                    Log debug "error - $($_)"
+                    Log debug ($phone | ConvertTo-Json)
+                }
+                }
+
+            }
+            catch {
+                Log error "Failed: $_"
+                Write-Error $_
+            }
+    }
+
+    Log info "Done"
+}
+
 
 function Idm-PhoneTemplatesRead {
     param (
@@ -1550,8 +1942,27 @@ function Open-CiscoUnifiedCMConnection {
     $webClient.Headers.Add("Content-Type","text/xml")
     $webClient.Headers.Add("SOAPAction",("CUCM:DB ver={0} {1}" -f $SystemParams.version, $SoapAction))
     
-    $webClient.Credentials = new-object System.Net.NetworkCredential($SystemParams.username, $SystemParams.password)
+    $pair = "{0}:{1}" -f $SystemParams.username, $SystemParams.password
+    $auth = "Basic {0}" -f [System.Convert]::ToBase64String( ([System.Text.Encoding]::ASCII.GetBytes($pair)) )
+    $webClient.Headers.Add("Authorization",$auth)
+    
+    # This was making two calls, one unauthorized then one authorizated. Opt'ed for building header instead.
+    #$webClient.Credentials = new-object System.Net.NetworkCredential($SystemParams.username, $SystemParams.password)
 
+    if($SystemParams.use_proxy)
+    {
+       # Log info "Proxy enabled"
+        $webClient.proxy = new-object System.Net.WebProxy
+        $webClient.Proxy.Address = $SystemParams.proxy_address
+        
+        if($SystemParams.use_proxy_credentials)
+        {
+            #Log info "Using proxy authentication"
+            $WebClient.proxy.Credentials = New-Object System.Net.NetworkCredential($SystemParams.proxy_username, (ConvertTo-SecureString $SystemParams.proxy_password -AsPlainText -Force) )
+        }
+    }
+
+    #Log debug ("Cisco United CM - POST - {0}" -f $uri)
     [xml]$webClient.UploadString($uri, $xmlRequest)
 }
 
@@ -1834,20 +2245,22 @@ Function ConvertTo-FlatObject {
                     {
                         Try
                         {
-                            $DefaultTypeProps = @( $obj.gettype().GetProperties() | Select -ExpandProperty Name -ErrorAction Stop )
+                            $DefaultTypeProps = @( $obj.gettype().GetProperties() | Select-Object -ExpandProperty Name -ErrorAction Stop )
+                            $DefaultTypeProps = $DefaultTypeProps | Where-Object { $_ -ne "Name" }
+                            
                             if($DefaultTypeProps.count -gt 0)
                             {
-                                Write-Verbose "Excluding default properties for $($obj.gettype().Fullname):`n$($DefaultTypeProps | Out-String)"
+                                Write-Verbose -Verbose "Excluding default properties for $($obj.gettype().Fullname):`n$($DefaultTypeProps | Out-String)"
                             }
                         }
                         Catch
                         {
-                            Write-Verbose "Failed to extract properties from $($obj.gettype().Fullname): $_"
+                            Write-Verbose -Verbose "Failed to extract properties from $($obj.gettype().Fullname): $_"
                             $DefaultTypeProps = @()
                         }
                     }
                     
-                    @( $Exclude + $DefaultTypeProps ) | Select -Unique
+                    @( $Exclude + $DefaultTypeProps ) | Select-Object -Unique
             }
 
             #Function to recurse the Object, add properties to object
@@ -1861,7 +2274,7 @@ Function ConvertTo-FlatObject {
                 )
 
                 # Handle initial call
-                    Write-Verbose "Working in path $Path at depth $depth"
+                    Write-Verbose -Verbose "Working in path $Path at depth $depth"
                     Write-Debug "Recurse Object called with PSBoundParameters:`n$($PSBoundParameters | Out-String)"
                     $Depth++
 
@@ -1869,8 +2282,8 @@ Function ConvertTo-FlatObject {
                     $ExcludeProps = @( Get-Exclude $object )
 
                 #Get the children we care about, and their names
-                    $Children = $object.psobject.properties | Where {$ExcludeProps -notcontains $_.Name }
-                    Write-Debug "Working on properties:`n$($Children | select -ExpandProperty Name | Out-String)"
+                    $Children = $object.psobject.properties | Where-Object {$ExcludeProps -notcontains $_.Name }
+                    Write-Debug "Working on properties:`n$($Children | Select-Object -ExpandProperty Name | Out-String)"
 
                 #Loop through the children properties.
                 foreach($Child in @($Children))
@@ -1902,14 +2315,14 @@ Function ConvertTo-FlatObject {
                             if("$($ChildValue)" -ne 'System.Xml.XmlElement')
                             {
                                 $Output | Add-Member -MemberType NoteProperty -Name $ThisPath -Value "$($ChildValue)"
-                                Write-Verbose "Adding member '$ThisPath'"
+                                Write-Verbose -Verbose "Adding member '$ThisPath'"
                             }
                         }
 
                     #Handle null...
-                        if($ChildValue -eq $null)
+                        if($null -eq $ChildValue)
                         {
-                            Write-Verbose "Skipping NULL $ChildName"
+                            Write-Verbose -Verbose "Skipping NULL $ChildName"
                             continue
                         }
 
@@ -1925,7 +2338,7 @@ Function ConvertTo-FlatObject {
                             )
                         )
                         {
-                            Write-Verbose "Skipping $ChildName with type $($ChildValue.GetType().fullname)"
+                            Write-Verbose -Verbose "Skipping $ChildName with type $($ChildValue.GetType().fullname)"
                             continue
                         }
 
@@ -1944,7 +2357,7 @@ Function ConvertTo-FlatObject {
                         $ExcludeProps = @( Get-Exclude $ChildValue )
 
                     #Get the children's children we care about, and their names. Also look for signs of a hashtable like type
-                        $ChildrensChildren = $ChildValue.psobject.properties | Where {$ExcludeProps -notcontains $_.Name }
+                        $ChildrensChildren = $ChildValue.psobject.properties | Where-Object {$ExcludeProps -notcontains $_.Name }
                         $HashKeys = if($ChildValue.Keys -notlike $null -and $ChildValue.Values)
                         {
                             $ChildValue.Keys
@@ -1953,7 +2366,7 @@ Function ConvertTo-FlatObject {
                         {
                             $null
                         }
-                        Write-Debug "Found children's children $($ChildrensChildren | select -ExpandProperty Name | Out-String)"
+                        Write-Debug "Found children's children $($ChildrensChildren | Select-Object -ExpandProperty Name | Out-String)"
 
                     #If we aren't at max depth or a leaf...
                     if(
@@ -1964,10 +2377,10 @@ Function ConvertTo-FlatObject {
                         #This handles hashtables. But it won't recurse...
                             if($HashKeys)
                             {
-                                Write-Verbose "Working on hashtable $CurrentPath"
+                                Write-Verbose -Verbose "Working on hashtable $CurrentPath"
                                 foreach($key in $HashKeys)
                                 {
-                                    Write-Verbose "Adding value from hashtable $CurrentPath['$key']"
+                                    Write-Verbose -Verbose "Adding value from hashtable $CurrentPath['$key']"
                                     $Output | Add-Member -MemberType NoteProperty -name "$CurrentPath['$key']" -value "$($ChildValue["$key"])"
                                     $Output = Recurse-Object -Object $ChildValue["$key"] -Path "$CurrentPath['$key']" -Output $Output -depth $depth 
                                 }
@@ -1979,14 +2392,14 @@ Function ConvertTo-FlatObject {
                                 {
                                     foreach($item in @($ChildValue))
                                     {  
-                                        Write-Verbose "Recursing through array node '$CurrentPath'"
+                                        Write-Verbose -Verbose "Recursing through array node '$CurrentPath'"
                                         $Output = Recurse-Object -Object $item -Path "$CurrentPath[$count]" -Output $Output -depth $depth
                                         $Count++
                                     }
                                 }
                                 else
                                 {
-                                    Write-Verbose "Recursing through node '$CurrentPath'"
+                                    Write-Verbose -Verbose "Recursing through node '$CurrentPath'"
                                     $Output = Recurse-Object -Object $ChildValue -Path $CurrentPath -Output $Output -depth $depth
                                 }
                             }
