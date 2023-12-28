@@ -1,13 +1,10 @@
 #
 # Cisco Unified CM.ps1 - Cisco Unified CM (AXL API)
 #
-
-
 $Log_MaskableKeys = @(
     # Put a comma-separated list of attribute names here, whose value should be masked before 
     'Password'
 )
-
 
 #
 # System functions
@@ -135,7 +132,6 @@ function Idm-SystemInfo {
 function Idm-OnUnload {
 }
 
-
 #
 # Object CRUD functions
 #
@@ -222,16 +218,16 @@ $Properties = @{
         @{ name = 'name';                              options = @('default')                      }
         @{ name = 'autoSearchSpaceName';                              options = @('default')                      }
         @{ name = 'dateTimeSettingName_uuid';                              options = @('default')                      }
-        @{ name = 'dateTimeSettingName_{#text}';                              options = @('default')                      }
+        @{ name = 'dateTimeSettingName_text';                              options = @('default')                      }
         @{ name = 'callManagerGroupName_uuid';                              options = @('default')                      }
-        @{ name = 'callManagerGroupName_{#text}';                              options = @('default')                      }
+        @{ name = 'callManagerGroupName_text';                              options = @('default')                      }
         @{ name = 'mediaResourceListName_uuid';                              options = @('default')                      }
-        @{ name = 'mediaResourceListName_{#text}';                              options = @('default')                      }
+        @{ name = 'mediaResourceListName_text';                              options = @('default')                      }
         @{ name = 'regionName_uuid';                              options = @('default')                      }
-        @{ name = 'regionName_{#text}';                              options = @('default')                      }
+        @{ name = 'regionName_text';                              options = @('default')                      }
         @{ name = 'networkLocale';                              options = @('default')                      }
         @{ name = 'srstName_uuid';                              options = @('default')                      }
-        @{ name = 'srstName_{#text}';                              options = @('default')                      }
+        @{ name = 'srstName_text';                              options = @('default')                      }
         @{ name = 'connectionMonitorDuration';                              options = @('default')                      }
         @{ name = 'automatedAlternateRoutingCssName';                              options = @('default')                      }
         @{ name = 'aarNeighborhoodName';                              options = @('default')                      }
@@ -382,7 +378,7 @@ $Properties = @{
         @{ name = 'callInfoPrivacyStatus';                              options = @('default')                      }
         @{ name = 'hlogStatus';                              options = @('default')                      }
         @{ name = 'ownerUserName_uuid';                              options = @('default')                      }
-        @{ name = 'ownerUserName_{#text}';                              options = @('default')                      }
+        @{ name = 'ownerUserName_text';                              options = @('default')                      }
         @{ name = 'ignorePresentationIndicators';                              options = @('default')                      }
         @{ name = 'packetCaptureMode';                              options = @('default')                      }
         @{ name = 'packetCaptureDuration';                              options = @('default')                      }
@@ -715,6 +711,76 @@ function Idm-LinesRead {
     Log info "Done"
 }
 
+function Idm-LinesUpdate {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'update'
+            parameters = @(
+                @{ name = 'uuid';       allowance = 'mandatory'   }    
+                @{ name = 'description';       allowance = 'mandatory'   } 
+                @{ name = 'alertingName';       allowance = 'mandatory'   } 
+                @{ name = 'asciiAlertingName';       allowance = 'mandatory'   }
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            LogIO info "LinesUpdate" -In -UUID $function_params.uuid -Name $function_params.Name
+            $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ns:updateLine sequence=\"?\">
+                    <uuid>{1}</uuid>
+                    <description>{2}</description>
+                    <alertingName>{3}</alertingName>
+                    <asciiAlertingName>{4}</asciiAlertingName>
+                </ns:updateLine>
+            </soapenv:Body>
+            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.description, $function_params.alertingName, $function_params.asciiAlertingName
+            
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updateLine" -SoapBody $xmlRequest
+  
+            foreach($item in $response.Envelope.Body.updateLineResponse.return.row )
+            {
+                ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+            }
+            $rv = $true;
+            LogIO info "LinesUpdate" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
+    Log info "Done"
+}
+
 function Idm-CallingSearchSpacesRead {
     param (
         [switch] $GetMeta,
@@ -1009,7 +1075,6 @@ function Idm-DevicePoolsRead {
     Log info "Done"
 }
 
-
 function Idm-EndUsersRead {
     param (
         [switch] $GetMeta,
@@ -1062,6 +1127,76 @@ function Idm-EndUsersRead {
             }
     }
 
+    Log info "Done"
+}
+
+function Idm-EndUsersCreate {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'create'
+            parameters = @(
+                @{ name = 'firstname';       allowance = 'mandatory'   }    
+                @{ name = 'lastname';       allowance = 'mandatory'   } 
+                @{ name = 'userid';       allowance = 'mandatory'   } 
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            LogIO info "EndUsersCreate" -In -UUID $function_params.uuid -Name $function_params.Name
+            $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ns:addUser sequence=\"?\">
+                    <user>
+                        <firstName>{1}</firstName>
+                        <lastName>{2}</lastName>
+                        <userid>{3}/userid>
+                    </user>
+                </ns:addUser>
+            </soapenv:Body>
+            </soapenv:Envelope>' -f $system_params.version, $function_params.firstname, $function_params.lastname, $function_params.userid
+            
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "addUser" -SoapBody $xmlRequest
+  
+            foreach($item in $response.Envelope.Body.addUserResponse.return.row )
+            {
+                ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+            }
+            $rv = $true;
+            LogIO info "EndUsersCreate" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
     Log info "Done"
 }
 
@@ -1125,6 +1260,126 @@ function Idm-EndUserDevicesRead {
             }
     }
 
+    Log info "Done"
+}
+
+function Idm-EndUserDevicesCreate {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'create'
+            parameters = @(
+                @{ name = 'userpkid';       allowance = 'mandatory'   }    
+                @{ name = 'userid';       allowance = 'mandatory'   }    
+                @{ name = 'devicepkid';       allowance = 'mandatory'   }
+                @{ name = 'name';       allowance = 'mandatory'   } 
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            LogIO info "EndUserDevicesCreate" -In -UUID $function_params.uuid -Name $function_params.Name
+            $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ns:updateUser sequence=\"?\">
+                    <userid>{1}</userid>
+                    <associatedDevices>
+                        <device>{2}</device>
+                    </associatedDevices>
+                </ns:updateUser>
+            </soapenv:Body>
+            </soapenv:Envelope>' -f $system_params.version, $function_params.userid, $function_params.name
+            
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updateUser" -SoapBody $xmlRequest
+  
+            foreach($item in $response.Envelope.Body.addUserResponse.return.row )
+            {
+                ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+            }
+            $rv = $true;
+            LogIO info "EndUserDevicesCreate" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
+    Log info "Done"
+}
+
+function Idm-EndUserDevicesDelete {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'delete'
+            parameters = @(
+                @{ name = 'devicepkid';       allowance = 'mandatory'   }    
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            #Only used for table removal, not target system request is made
+            LogIO info "EndUserDeviceDelete" -In -devicepkid $function_params.devicepkid
+            $rv = $true;
+            LogIO info "EndUserDeviceDelete" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
     Log info "Done"
 }
 
@@ -1322,6 +1577,7 @@ function Idm-MohAudioSourcesRead {
 
     Log info "Done"
 }
+
 function Idm-PhonesRead {
     param (
         [switch] $GetMeta,
@@ -1384,6 +1640,265 @@ function Idm-PhonesRead {
             }
     }
 
+    Log info "Done"
+}
+
+function Idm-PhonesCreate {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'create'
+            parameters = @(
+                @{ name = 'name';       allowance = 'mandatory'   }    
+                @{ name = 'description';       allowance = 'mandatory'   } 
+                @{ name = 'product';       allowance = 'mandatory'   } 
+                @{ name = 'ownerUsername';       allowance = 'mandatory'   } 
+                @{ name = 'class';       allowance = 'mandatory'   } 
+                @{ name = 'protocol';       allowance = 'mandatory'   } 
+                @{ name = 'protocolSide';       allowance = 'mandatory'   } 
+                @{ name = 'useTrustedRelayPoint';       allowance = 'mandatory'   } 
+                @{ name = 'builtInBridgeStatus';       allowance = 'mandatory'   } 
+                @{ name = 'packetCaptureMode';       allowance = 'mandatory'   } 
+                @{ name = 'certificateOperation';       allowance = 'mandatory'   } 
+                @{ name = 'deviceMobilityMode';       allowance = 'mandatory'   } 
+                @{ name = 'networkLocation';       allowance = 'mandatory'   } 
+                @{ name = 'networkLocale';       allowance = 'mandatory'   } 
+                @{ name = 'enableExtensionMobility';       allowance = 'mandatory'   } 
+                @{ name = 'primaryPhoneName';       allowance = 'mandatory'   } 
+                @{ name = 'networkHoldMohAudioSourceId';       allowance = 'mandatory'   } 
+                @{ name = 'userHoldMohAudioSourceId';       allowance = 'mandatory'   } 
+                @{ name = 'devicePoolName';       allowance = 'mandatory'   } 
+                @{ name = 'phoneTemplateName';       allowance = 'mandatory'   } 
+                @{ name = 'callingSearchSpaceName';       allowance = 'mandatory'   } 
+                @{ name = 'locationName';       allowance = 'mandatory'   } 
+                @{ name = 'mediaResourceListName';       allowance = 'mandatory'   } 
+                @{ name = 'sipProfileName';       allowance = 'mandatory'   } 
+                @{ name = 'directoryNumber';       allowance = 'mandatory'   } 
+                @{ name = 'routePartitionName';       allowance = 'mandatory'   } 
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            LogIO info "PhonesCreate" -In -UUID $function_params.uuid -Name $function_params.Name
+            $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ns:addPhone>
+                    <phone>
+                        <name>{1}</name>
+                        <description>{2}</description>
+                        <product>{3}</product>
+                        <ownerUserName>{4}</ownerUserName>
+
+                        <class>{5}</class>
+                        <protocol>{6}</protocol>
+                        <protocolSide>{7}</protocolSide>
+                        <useTrustedRelayPoint>{8}</useTrustedRelayPoint>
+                        <builtInBridgeStatus>{9}</builtInBridgeStatus>
+                        <packetCaptureMode>{10}</packetCaptureMode>
+                        <certificateOperation>{11}</certificateOperation>
+                        <deviceMobilityMode>{12}</deviceMobilityMode>
+                        <networkLocation>{13}</networkLocation>
+                        <networkLocale>{14}</networkLocale>
+                        <enableExtensionMobility>{15}</enableExtensionMobility>
+
+                        <primaryPhoneName>{16}</primaryPhoneName>
+
+                        <networkHoldMohAudioSourceId>{17}</networkHoldMohAudioSourceId>
+                        <userHoldMohAudioSourceId>{18}</userHoldMohAudioSourceId>
+
+                        <devicePoolName uuid="{19}" />
+                        <phoneTemplateName uuid="{20}" />
+                        <callingSearchSpaceName uuid="{21}" />
+                        <locationName uuid="{22}" />
+                        <mediaResourceListName uuid="{23}" />
+                        <sipProfileName uuid="{24}" />
+
+                        <lines>
+                        <lineIdentifier>
+                        <directoryNumber>{25}</directoryNumber>
+                        <routePartitionName>{26}</routePartitionName>
+                        </lineIdentifier>
+                        </lines>
+
+                    </phone>
+                </ns:addPhone>
+            </soapenv:Body>
+            </soapenv:Envelope>' -f $system_params.version, $function_params.name, $function_params.description, $function_params.product, $function_params.ownerUserName, $function_params.class, $function_params.protocol,$function_params.protocolSide, $function_params.useTrustedRelayPoint,
+            $function_params.builtInBridgeStatus,$function_params.packetCaptureMode, $function_params.certificateOperation,$function_params.deviceMobilityMode,$function_params.networkLocation,$function_params.networkLocale,$function_params.enableExtensionMobility,$function_params.primaryPhoneName,
+            $function_params.devicePoolName,$function_params.phoneTemplateName, $function_params.callingSearchSpaceName,$function_params.locationName, $function_params.mediaResourceListName, $function_params.sipProfileName,$function_params.directoryNumber,$function_params.routePartitionName
+            
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "addPhone" -SoapBody $xmlRequest
+  
+            foreach($item in $response.Envelope.Body.addPhoneResponse.return.row )
+            {
+                ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+            }
+            $rv = $true;
+            LogIO info "PhonesCreate" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
+    Log info "Done"
+}
+
+function Idm-PhonesUpdate {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'update'
+            parameters = @(
+                @{ name = 'uuid';       allowance = 'mandatory'   }    
+                @{ name = 'ownerUserName';       allowance = 'mandatory'   } 
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            LogIO info "PhonesUpdate" -In -UUID $function_params.uuid -Index $function_params.index
+            $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ns:updatePhone sequence=\"?\">
+                    <uuid>{1}</uuid>
+                    <ownerUserName>{2}</ownerUserName>
+                </ns:updatePhone>
+            </soapenv:Body>
+            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.ownerUserName
+            
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updatePhone" -SoapBody $xmlRequest
+  
+            foreach($item in $response.Envelope.Body.updateLineResponse.return.row )
+            {
+                ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+            }
+            $rv = $true;
+            LogIO info "PhonesUpdate" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
+    Log info "Done"
+}
+
+function Idm-PhonesDelete {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'delete'
+            parameters = @(
+                @{ name = 'uuid';       allowance = 'mandatory'   }    
+                @{ name = 'name';       allowance = 'mandatory'   } 
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            LogIO info "removePhone" -In -UUID $function_params.uuid -Name $function_params.Name
+            $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ns:removePhone>
+                    <name>{1}</name>
+                </ns:removePhone>
+            </soapenv:Body>
+         </soapenv:Envelope>' -f $system_params.version, $function_params.name
+            
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "removePhone" -SoapBody $xmlRequest
+  
+            foreach($item in $response.Envelope.Body.removePhoneResponse.return.row )
+            {
+                ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+            }
+            $rv = $true;
+            LogIO info "removePhone" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
     Log info "Done"
 }
 
@@ -1515,6 +2030,88 @@ function Idm-PhoneLinesRead {
     Log info "Done"
 }
 
+function Idm-PhoneLinesUpdate {
+    param (
+        # Operations
+        [switch] $GetMeta,
+        # Parameters
+        [string] $SystemParams,
+        [string] $FunctionParams
+    )
+
+    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+
+    if ($GetMeta) {
+        #
+        # Get meta data
+        #
+
+        @{
+            semantics = 'update'
+            parameters = @(
+                @{ name = 'uuid';       allowance = 'mandatory'   }    
+                @{ name = 'index';       allowance = 'mandatory'   } 
+                @{ name = 'dirn_pattern';       allowance = 'mandatory'   } 
+                @{ name = 'dirn_routePartitionName';       allowance = 'mandatory'   } 
+                @{ name = 'label';       allowance = 'mandatory'   }
+                @{ name = 'display';       allowance = 'mandatory'   }
+                @{ name = 'e164Mask';       allowance = 'mandatory'   }
+                @{ name = '*'; allowance = 'prohibited' }
+            )
+        }
+    }
+    else {
+        #
+        # Execute function
+        #
+        $connection_params = ConvertFrom-Json2 $SystemParams
+        $function_params   = ConvertFrom-Json2 $FunctionParams
+
+        $properties = $function_params.Clone()
+        
+        try { 
+            LogIO info "PhoneLinesUpdate" -In -UUID $function_params.uuid -Index $function_params.index
+            $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ns:updatePhone sequence=\"?\">
+                    <uuid>{1}</uuid>
+                    <addLines>
+                        <line>
+                        <index>{2}</index>
+                        <dirn>
+                            <pattern>{3}</pattern>
+                            <routePartitionName>{4}</routePartitionName>
+                        </dirn>
+                        <label>{5}</label>
+                        <display>{6}</display>
+                        <displayAscii>{7}</displayAscii>
+                        <e164Mask>{8}</e164Mask>
+                        </line>
+                    </addLines>
+                </ns:updatePhone>
+            </soapenv:Body>
+            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.index, $function_params.dirn_pattern, $function_params.dirn_routePartitionName, $function_params.label, $function_params.display, $function_params.display, $function_params.e164Mask
+            
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updatePhone" -SoapBody $xmlRequest
+  
+            foreach($item in $response.Envelope.Body.updateLineResponse.return.row )
+            {
+                ($item | ConvertTo-FlatObject) | Select-Object $properties                 
+            }
+            $rv = $true;
+            LogIO info "PhoneLinesUpdate" -Out $rv
+            Log info ($function_params | ConvertTo-Json)
+        }
+        catch {
+            Log error "Failed: $_"
+            Write-Error $_
+        }
+        
+        
+    }
+    Log info "Done"
+}
 
 function Idm-PhoneTemplatesRead {
     param (
@@ -2312,6 +2909,7 @@ Function ConvertTo-FlatObject {
                             } else {
                                 $ThisPath = @( $Path + $FriendlyChildName ) -join "_"
                             }
+                            $ThisPath = $ThisPath.Replace("{#text}","text")
                             if("$($ChildValue)" -ne 'System.Xml.XmlElement')
                             {
                                 $Output | Add-Member -MemberType NoteProperty -Name $ThisPath -Value "$($ChildValue)"
@@ -2380,9 +2978,10 @@ Function ConvertTo-FlatObject {
                                 Write-Verbose -Verbose "Working on hashtable $CurrentPath"
                                 foreach($key in $HashKeys)
                                 {
-                                    Write-Verbose -Verbose "Adding value from hashtable $CurrentPath['$key']"
-                                    $Output | Add-Member -MemberType NoteProperty -name "$CurrentPath['$key']" -value "$($ChildValue["$key"])"
-                                    $Output = Recurse-Object -Object $ChildValue["$key"] -Path "$CurrentPath['$key']" -Output $Output -depth $depth 
+                                    $newKey = $key.Replace("{#text}","text")
+                                    Write-Verbose -Verbose "Adding value from hashtable $CurrentPath['$newKey']"
+                                    $Output | Add-Member -MemberType NoteProperty -name "$CurrentPath['$newKey']" -value "$($ChildValue["$newKey"])"
+                                    $Output = Recurse-Object -Object $ChildValue["$newKey"] -Path "$CurrentPath['$newKey']" -Output $Output -depth $depth 
                                 }
                             }
                         #Sub children? Recurse!
