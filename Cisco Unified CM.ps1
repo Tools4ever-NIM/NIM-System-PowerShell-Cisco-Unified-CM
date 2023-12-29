@@ -1665,7 +1665,7 @@ function Idm-PhonesCreate {
                 @{ name = 'name';       allowance = 'mandatory'   }    
                 @{ name = 'description';       allowance = 'mandatory'   } 
                 @{ name = 'product';       allowance = 'mandatory'   } 
-                @{ name = 'ownerUsername';       allowance = 'mandatory'   } 
+                @{ name = 'ownerUsername_text';       allowance = 'mandatory'   } 
                 @{ name = 'class';       allowance = 'mandatory'   } 
                 @{ name = 'protocol';       allowance = 'mandatory'   } 
                 @{ name = 'protocolSide';       allowance = 'mandatory'   } 
@@ -1747,7 +1747,7 @@ function Idm-PhonesCreate {
                     </phone>
                 </ns:addPhone>
             </soapenv:Body>
-            </soapenv:Envelope>' -f $system_params.version, $function_params.name, $function_params.description, $function_params.product, $function_params.ownerUserName, $function_params.class, $function_params.protocol,$function_params.protocolSide, $function_params.useTrustedRelayPoint,
+            </soapenv:Envelope>' -f $system_params.version, $function_params.name, $function_params.description, $function_params.product, $function_params.ownerUserName_text, $function_params.class, $function_params.protocol,$function_params.protocolSide, $function_params.useTrustedRelayPoint,
             $function_params.builtInBridgeStatus,$function_params.packetCaptureMode, $function_params.certificateOperation,$function_params.deviceMobilityMode,$function_params.networkLocation,$function_params.networkLocale,$function_params.enableExtensionMobility,$function_params.primaryPhoneName,
             $function_params.devicePoolName,$function_params.phoneTemplateName, $function_params.callingSearchSpaceName,$function_params.locationName, $function_params.mediaResourceListName, $function_params.sipProfileName,$function_params.directoryNumber,$function_params.routePartitionName
             
