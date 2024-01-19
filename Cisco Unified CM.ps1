@@ -883,17 +883,17 @@ function Idm-LinesUpdate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
         
         try { 
-            LogIO info "LinesUpdate" -In -UUID $function_params.uuid -Name $function_params.Name
+            LogIO info "LinesUpdate" -In -UUID $function_params.uuid -description $function_params.description -alertingName $function_params.alertingName -asciiAlertingName $function_params.asciiAlertingName
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
-                <ns:updateLine sequence=\"?\">
+                <ns:updateLine sequence="?">
                     <uuid>{1}</uuid>
                     <description>{2}</description>
                     <alertingName>{3}</alertingName>
@@ -901,7 +901,9 @@ function Idm-LinesUpdate {
                 </ns:updateLine>
             </soapenv:Body>
             </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.description, $function_params.alertingName, $function_params.asciiAlertingName
-            
+            Log info "Log params"   
+            Log info ($SystemParams)
+            Log info "Log params done"   
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updateLine" -SoapBody $xmlRequest
   
             foreach($item in $response.Envelope.Body.updateLineResponse.return.row )
@@ -1319,7 +1321,7 @@ function Idm-EndUsersCreate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -1329,7 +1331,7 @@ function Idm-EndUsersCreate {
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
-                <ns:addUser sequence=\"?\">
+                <ns:addUser sequence="?">
                     <user>
                         <firstName>{1}</firstName>
                         <lastName>{2}</lastName>
@@ -1390,7 +1392,7 @@ function Idm-EndUsersUpdate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -1413,7 +1415,7 @@ function Idm-EndUsersUpdate {
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
-                <ns:addUser sequence=\"?\">
+                <ns:addUser sequence="?">
                     <user>
                         {1}
                     </user>
@@ -1589,7 +1591,7 @@ function Idm-EndUserDeviceMapsCreate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -1653,7 +1655,7 @@ function Idm-EndUserDeviceMapsDelete {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -1999,7 +2001,7 @@ function Idm-PhonesCreate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -2103,7 +2105,7 @@ function Idm-PhonesUpdate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -2113,7 +2115,7 @@ function Idm-PhonesUpdate {
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
-                <ns:updatePhone sequence=\"?\">
+                <ns:updatePhone sequence="?">
                     <uuid>{1}</uuid>
                     <ownerUserName>{2}</ownerUserName>
                 </ns:updatePhone>
@@ -2169,7 +2171,7 @@ function Idm-PhonesDelete {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -2367,7 +2369,7 @@ function Idm-PhoneLinesCreate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -2377,7 +2379,7 @@ function Idm-PhoneLinesCreate {
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
-                <ns:updatePhone sequence=\"?\">
+                <ns:updatePhone sequence="?">
                     <uuid>{1}</uuid>
                     <addLines>
                         <line>
@@ -2451,7 +2453,7 @@ function Idm-PhoneLinesUpdate {
         #
         # Execute function
         #
-        $connection_params = ConvertFrom-Json2 $SystemParams
+        $system_params = ConvertFrom-Json2 $SystemParams
         $function_params   = ConvertFrom-Json2 $FunctionParams
 
         $properties = $function_params.Clone()
@@ -2485,7 +2487,7 @@ function Idm-PhoneLinesUpdate {
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
-                <ns:updatePhone sequence=\"?\">
+                <ns:updatePhone sequence="?">
                     <uuid>{1}</uuid>
                     <lines>
                         <line>
@@ -2914,7 +2916,7 @@ function Idm-UniversalDeviceTemplatesRead {
                 </ns:listUniversalDeviceTemplate>
                 </soapenv:Body>
              </soapenv:Envelope>' -f $system_params.version
-                
+
                 $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "listUniversalDeviceTemplate" -SoapBody $xmlRequest
       
                 foreach($item in $response.Envelope.Body.listUniversalDeviceTemplateResponse.return.universalDeviceTemplate )
@@ -2956,19 +2958,50 @@ function Open-CiscoUnifiedCMConnection {
 
     if($SystemParams.use_proxy)
     {
-       # Log info "Proxy enabled"
+        Log info "Proxy enabled"
+        add-type @"
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+public class TrustAllCertsPolicy : ICertificatePolicy {
+    public bool CheckValidationResult(
+        ServicePoint srvPoint, X509Certificate certificate,
+        WebRequest request, int certificateProblem) {
+        return true;
+    }
+}
+"@
+
+        [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+
+        
         $webClient.proxy = new-object System.Net.WebProxy
         $webClient.Proxy.Address = $SystemParams.proxy_address
         
         if($SystemParams.use_proxy_credentials)
         {
-            #Log info "Using proxy authentication"
+            Log info "Using proxy authentication"
             $WebClient.proxy.Credentials = New-Object System.Net.NetworkCredential($SystemParams.proxy_username, (ConvertTo-SecureString $SystemParams.proxy_password -AsPlainText -Force) )
         }
     }
 
     #Log debug ("Cisco United CM - POST - {0}" -f $uri)
-    [xml]$webClient.UploadString($uri, $xmlRequest)
+    try { 
+        [xml]$webClient.UploadString($uri, $xmlRequest)
+    } catch [System.Net.WebException] {
+        if ($_.Exception.Response -ne $null) {
+            $responseStream = $_.Exception.Response.GetResponseStream()
+            if ($responseStream -ne $null) {
+                $reader = New-Object System.IO.StreamReader($responseStream)
+                $responseBodyFromException = $reader.ReadToEnd()
+                Log error "$($responseBodyFromException)"
+            }
+        }
+        throw "$($_.Exception.Message)"
+    } catch {
+        throw $_
+    } finally {
+        $webClient.Dispose()
+    }
 }
 
 function Get-ClassMetaData {
