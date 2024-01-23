@@ -474,7 +474,8 @@ $Properties = @{
         @{ name = 'display';                              options = @('default')                      }
         @{ name = 'dirn_uuid';                              options = @('default')                      }
         @{ name = 'dirn_pattern';                              options = @('default')                      }
-        @{ name = 'dirn_routePartitionName';                              options = @('default')                      }
+        @{ name = 'dirn_routePartitionName_uuid';                              options = @('default')                      }
+        @{ name = 'dirn_routePartitionName_text';                              options = @('default')                      }
         @{ name = 'e164Mask';                              options = @('default')                      }
         @{ name = 'phone_uuid';                              options = @('default')                      }
         @{ name = 'userId';                              options = @('default')                      }
@@ -1602,10 +1603,10 @@ function Idm-EndUserDeviceMapsCreate {
                 <soapenv:Header/>
                 <soapenv:Body>
                    <ns:executeSQLUpdate>
-                      <sql>INSERT INTO enduserdevicemap (pkid,fkenduser,fkdevice,tkuserassociation) VALUES (newid(),"{1}","{2}",{3})</sql>
+                      <sql>INSERT INTO enduserdevicemap (fkenduser,fkdevice,tkuserassociation) VALUES ("{1}","{2}",{3})</sql>
                    </ns:executeSQLUpdate>
                 </soapenv:Body>
-             </soapenv:Envelope>' -f $system_params.version, $function_params.fkenduser, $function_params.fkdevice, $function_params.tkuserassociation
+             </soapenv:Envelope>' -f $system_params.version, $function_params.fkenduser.toLower(), $function_params.fkdevice.toLower(), $function_params.tkuserassociation
             
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLUpdate" -SoapBody $xmlRequest
   
@@ -1661,7 +1662,6 @@ function Idm-EndUserDeviceMapsDelete {
         $properties = $function_params.Clone()
         
         try { 
-            #Only used for table removal, not target system request is made
             LogIO info "EndUserDeviceMapsDelete" -In -pkid $function_params.pkid
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
                 <soapenv:Header/>
@@ -2177,7 +2177,7 @@ function Idm-PhonesDelete {
         $properties = $function_params.Clone()
         
         try { 
-            LogIO info "removePhone" -In -UUID $function_params.uuid -Name $function_params.Name
+            LogIO info "PhonesDelete" -In -UUID $function_params.uuid -Name $function_params.Name
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
@@ -2194,7 +2194,7 @@ function Idm-PhonesDelete {
                 ($item | ConvertTo-FlatObject) | Select-Object $properties                 
             }
             $rv = $true;
-            LogIO info "removePhone" -Out $rv
+            LogIO info "PhonesDelete" -Out $rv
             Log info ($function_params | ConvertTo-Json)
         }
         catch {
@@ -2357,7 +2357,7 @@ function Idm-PhoneLinesCreate {
                 @{ name = 'uuid';       allowance = 'mandatory'   }    
                 @{ name = 'index';       allowance = 'mandatory'   } 
                 @{ name = 'dirn_pattern';       allowance = 'mandatory'   } 
-                @{ name = 'dirn_routePartitionName';       allowance = 'mandatory'   } 
+                @{ name = 'dirn_routePartitionName_text';       allowance = 'mandatory'   } 
                 @{ name = 'label';       allowance = 'mandatory'   }
                 @{ name = 'display';       allowance = 'mandatory'   }
                 @{ name = 'e164Mask';       allowance = 'mandatory'   }
@@ -2396,7 +2396,7 @@ function Idm-PhoneLinesCreate {
                     </addLines>
                 </ns:updatePhone>
             </soapenv:Body>
-            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.index, $function_params.dirn_pattern, $function_params.dirn_routePartitionName, $function_params.label, $function_params.display, $function_params.display, $function_params.e164Mask
+            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.index, $function_params.dirn_pattern, $function_params.dirn_routePartitionName_text, $function_params.label, $function_params.display, $function_params.display, $function_params.e164Mask
             
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updatePhone" -SoapBody $xmlRequest
   
@@ -2440,7 +2440,7 @@ function Idm-PhoneLinesUpdate {
                 @{ name = 'uuid';       allowance = 'mandatory'   }    
                 @{ name = 'index';       allowance = 'mandatory'   } 
                 @{ name = 'dirn_pattern';       allowance = 'mandatory'   } 
-                @{ name = 'dirn_routePartitionName';       allowance = 'mandatory'   } 
+                @{ name = 'dirn_routePartitionName_text';       allowance = 'mandatory'   } 
                 @{ name = 'label';       allowance = 'optional'   }
                 @{ name = 'display';       allowance = 'optional'   }
                 @{ name = 'e164Mask';       allowance = 'optional'   }
@@ -2489,7 +2489,7 @@ function Idm-PhoneLinesUpdate {
             <soapenv:Body>
                 <ns:updatePhone sequence="?">
                     <uuid>{1}</uuid>
-                    <lines>
+                    <addLines>
                         <line>
                             <index>{2}</index>
                             <dirn>
@@ -2498,10 +2498,10 @@ function Idm-PhoneLinesUpdate {
                             </dirn>
                             {5}
                         </line>
-                    </lines>
+                    </addLines>
                 </ns:updatePhone>
             </soapenv:Body>
-            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.index, $function_params.dirn_pattern, $function_params.dirn_routePartitionName, $optionalItems
+            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.index, $function_params.dirn_pattern, $function_params.dirn_routePartitionName_text, $optionalItems
             
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updatePhone" -SoapBody $xmlRequest
   
@@ -2993,7 +2993,8 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
             if ($responseStream -ne $null) {
                 $reader = New-Object System.IO.StreamReader($responseStream)
                 $responseBodyFromException = $reader.ReadToEnd()
-                Log error "$($responseBodyFromException)"
+                Log error "$($_.Exception.Message)"
+                throw "$($responseBodyFromException)"
             }
         }
         throw "$($_.Exception.Message)"
