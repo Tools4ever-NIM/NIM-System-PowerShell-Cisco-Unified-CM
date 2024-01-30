@@ -316,6 +316,7 @@ $Properties = @{
         @{ name = 'defaultprofile';                              options = @('default')                      }
         @{ name = 'description';                              options = @('default')                      }        
         @{ name = 'tkuserassociation';                              options = @('default')                      }        
+        @{ name = 'removeAllUsersForDevice';                              options = @('default')                      }      
     )
     Location = @(
         @{ name = 'uuid';                              options = @('default','key')                      }        
@@ -1385,6 +1386,7 @@ function Idm-EndUsersUpdate {
                 @{ name = 'firstname';       allowance = 'optional'   }    
                 @{ name = 'lastname';       allowance = 'optional'   } 
                 @{ name = 'dnorpattern';       allowance = 'optional'   } 
+                @{ name = 'routePartitionName';       allowance = 'optional'   } 
                 @{ name = '*'; allowance = 'prohibited' }
             )
         }
@@ -1584,6 +1586,7 @@ function Idm-EndUserDeviceMapsCreate {
                 @{ name = 'fkenduser';       allowance = 'mandatory'   }    
                 @{ name = 'fkdevice';       allowance = 'mandatory'   }    
                 @{ name = 'tkuserassociation';       allowance = 'mandatory'   }
+                @{ name = 'removeAllUsersForDevice';       allowance = 'optional'   }
                 @{ name = '*'; allowance = 'prohibited' }
             )
         }
@@ -1598,6 +1601,25 @@ function Idm-EndUserDeviceMapsCreate {
         $properties = $function_params.Clone()
         
         try { 
+
+            if($function_params.removeAllUsersForDevice -eq 'True') {
+                LogIO info "EndUserDeviceMapsRemoveOwners" -In -fkdevice $function_params.fkdevice
+                $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
+                    <soapenv:Header/>
+                    <soapenv:Body>
+                    <ns:executeSQLUpdate>
+                        <sql>DELETE FROM enduserdevicemap WHERE fkdevice = "{1}"</sql>
+                    </ns:executeSQLUpdate>
+                    </soapenv:Body>
+                </soapenv:Envelope>' -f $system_params.version, $function_params.fkdevice.toLower()
+                
+                $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLUpdate" -SoapBody $xmlRequest
+    
+                LogIO info "EndUserDeviceMapsRemoveOwners" -Out $rv
+                Log info ($function_params | ConvertTo-Json)
+
+            }
+
             LogIO info "EndUserDeviceMapsCreate" -In -fkenduser $function_params.fkenduser -fkdevice $function_params.fkdevice -tkuserassociation $function_params.tkuserassociation
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
                 <soapenv:Header/>
@@ -2096,7 +2118,7 @@ function Idm-PhonesUpdate {
             semantics = 'update'
             parameters = @(
                 @{ name = 'uuid';       allowance = 'mandatory'   }    
-                @{ name = 'ownerUserName';       allowance = 'mandatory'   } 
+                @{ name = 'ownerUserName_text';       allowance = 'mandatory'   } 
                 @{ name = '*'; allowance = 'prohibited' }
             )
         }
@@ -2120,7 +2142,7 @@ function Idm-PhonesUpdate {
                     <ownerUserName>{2}</ownerUserName>
                 </ns:updatePhone>
             </soapenv:Body>
-            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.ownerUserName
+            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.ownerUserName_text
             
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updatePhone" -SoapBody $xmlRequest
   
@@ -2438,6 +2460,7 @@ function Idm-PhoneLinesUpdate {
             semantics = 'update'
             parameters = @(
                 @{ name = 'uuid';       allowance = 'mandatory'   }    
+                @{ name = 'phone_uuid';       allowance = 'mandatory'   }
                 @{ name = 'index';       allowance = 'mandatory'   } 
                 @{ name = 'dirn_pattern';       allowance = 'mandatory'   } 
                 @{ name = 'dirn_routePartitionName_text';       allowance = 'mandatory'   } 
@@ -2501,7 +2524,7 @@ function Idm-PhoneLinesUpdate {
                     </addLines>
                 </ns:updatePhone>
             </soapenv:Body>
-            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.index, $function_params.dirn_pattern, $function_params.dirn_routePartitionName_text, $optionalItems
+            </soapenv:Envelope>' -f $system_params.version, $function_params.phone_uuid, $function_params.index, $function_params.dirn_pattern, $function_params.dirn_routePartitionName_text, $optionalItems
             
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updatePhone" -SoapBody $xmlRequest
   
