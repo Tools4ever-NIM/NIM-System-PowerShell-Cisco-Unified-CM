@@ -299,6 +299,7 @@ $Properties = @{
         @{ name = 'telephoneNumber';                              options = @('default')                      }
         @{ name = 'dnorpattern';                              options = @('default')                      }
         @{ name = 'routePartitionName';                              options = @('default')                      }
+        @{ name = 'selfService';                              options = @('default')                      }
        
     )
     EndUserDevice = @(
@@ -1265,7 +1266,8 @@ function Idm-EndUsersRead {
                       e.mobile,
                       e.nickname, 
                       e.telephoneNumber, 
-                      n.dnorpattern
+                      n.dnorpattern,
+                      e.keypadenteredalternateidentifier AS selfService
                   FROM 
                       enduser AS e
                   LEFT JOIN 
@@ -1382,11 +1384,13 @@ function Idm-EndUsersUpdate {
         @{
             semantics = 'update'
             parameters = @(
+                @{ name = 'pkid';       allowance = 'mandatory'   }     
                 @{ name = 'userid';       allowance = 'mandatory'   } 
                 @{ name = 'firstname';       allowance = 'optional'   }    
                 @{ name = 'lastname';       allowance = 'optional'   } 
                 @{ name = 'dnorpattern';       allowance = 'optional'   } 
                 @{ name = 'routePartitionName';       allowance = 'optional'   } 
+                @{ name = 'selfService';       allowance = 'optional'   } 
                 @{ name = '*'; allowance = 'prohibited' }
             )
         }
@@ -1408,7 +1412,7 @@ function Idm-EndUsersUpdate {
                 if($item.Name -eq 'dnorpattern') {
                     $user += "<primaryExtension>
                     <pattern>$($item.Value)</pattern>
-                    <routePartitionName>$function_params.routePartitionName</routePartitionName>
+                    <routePartitionName>$($function_params.routePartitionName)</routePartitionName>
                  </primaryExtension>" 
                 } else {
                     $user += "<$($item.Name)>$($item.Value)</$($item.Name)>"
@@ -1418,22 +1422,20 @@ function Idm-EndUsersUpdate {
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
-                <ns:addUser sequence="?">
-                    <user>
+                <ns:updateUser sequence="?">
                         {1}
-                    </user>
-                </ns:addUser>
+                </ns:updateUser>
             </soapenv:Body>
             </soapenv:Envelope>' -f $system_params.version, $user
             
-            #$response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "addUser" -SoapBody $xmlRequest
+            $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updateUser" -SoapBody $xmlRequest
   
             foreach($item in $response.Envelope.Body.updateUserResponse.return.row )
             {
                 ($item | ConvertTo-FlatObject) | Select-Object $properties                 
             }
             $rv = $true;
-            LogIO info "EndUsersCreate" -Out $rv
+            LogIO info "EndUsersUpdate" -Out $rv
             Log info ($function_params | ConvertTo-Json)
         }
         catch {
@@ -1689,7 +1691,7 @@ function Idm-EndUserDeviceMapsDelete {
                 <soapenv:Header/>
                 <soapenv:Body>
                    <ns:executeSQLUpdate>
-                      <sql>DELETE FROM enduserdevicemap WHERE pkid = "{1}" LIMIT 1</sql>
+                      <sql>DELETE FROM enduserdevicemap WHERE pkid = "{1}"</sql>
                    </ns:executeSQLUpdate>
                 </soapenv:Body>
              </soapenv:Envelope>' -f $system_params.version, $function_params.pkid
