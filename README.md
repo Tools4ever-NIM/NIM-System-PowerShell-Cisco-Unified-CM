@@ -4,14 +4,21 @@
 
 
 ## Data Tables
+- Application Users
+- Application User Device Maps
 - Calling Search Spaces
 - Common Phone Config
+- Devices
 - Device Pools
+- End Users
+- End User Devices
+- End User Device Maps
 - Lines
 - Locations
 - Media Resource Groups
 - Moh Audio Sources
 - Phones
+- Phone Lines
 - Phone Templates
 - Products
 - Sip Profiles
@@ -19,7 +26,21 @@
 
 
 ## Actions
-N/A
+- Lines
+    - Update
+- End Users
+    - Create
+    - Update
+- End User Device Maps
+    - Create
+    - Delete
+- Phones
+    - Create
+    - Update
+    - Delete
+- Phone Lines
+    - Create
+    - Update
 
 # NIM Docs
 The official NIM documentation can be found at: https://docs.nimsuite.com
