@@ -2120,7 +2120,8 @@ function Idm-PhonesUpdate {
             semantics = 'update'
             parameters = @(
                 @{ name = 'uuid';       allowance = 'mandatory'   }    
-                @{ name = 'ownerUserName_text';       allowance = 'mandatory'   } 
+                @{ name = 'ownerUserName_text';       allowance = 'optional'   } 
+				@{ name = 'description';       allowance = 'optional'   } 
                 @{ name = '*'; allowance = 'prohibited' }
             )
         }
@@ -2135,16 +2136,25 @@ function Idm-PhonesUpdate {
         $properties = $function_params.Clone()
         
         try { 
-            LogIO info "PhonesUpdate" -In -UUID $function_params.uuid -Index $function_params.index
+			$phoneBody = '<uuid>{0}</uuid>' -f $function_params.uuid
+			
+			if($function_params.ownerUserName_text -ne $null) { 
+				$phoneBody += '<ownerUserName>{0}</ownerUserName>' -f $function_params.ownerUserName_text
+			}
+			
+			if($function_params.description.length -gt 0) { 
+				$phoneBody += '<description>{0}</description>' -f $function_params.description
+			}
+		
+            LogIO info "PhonesUpdate" -In -UUID $function_params.uuid -ownerUsername_text $function_params.ownerUserName_text -description $function_params.description
             $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
             <soapenv:Header/>
             <soapenv:Body>
                 <ns:updatePhone sequence="?">
-                    <uuid>{1}</uuid>
-                    <ownerUserName>{2}</ownerUserName>
+					{1}
                 </ns:updatePhone>
             </soapenv:Body>
-            </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.ownerUserName_text
+            </soapenv:Envelope>' -f $system_params.version, $phoneBody
             
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updatePhone" -SoapBody $xmlRequest
   
