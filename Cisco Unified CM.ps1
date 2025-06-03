@@ -19,7 +19,7 @@ function Idm-SystemInfo {
         [string] $ConnectionParams
     )
 
-    Log info "-Connection=$Connection -TestConnection=$TestConnection -Configuration=$Configuration -ConnectionParams='$ConnectionParams'"
+    Log verbose "-Connection=$Connection -TestConnection=$TestConnection -Configuration=$Configuration -ConnectionParams='$ConnectionParams'"
     
     if ($Connection) {
         @(
@@ -126,7 +126,7 @@ function Idm-SystemInfo {
         @()
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-OnUnload {
@@ -690,7 +690,7 @@ function Idm-ApplicationUsersRead {
     )
 
     $Class = "ApplicationUser"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -737,7 +737,7 @@ function Idm-ApplicationUsersRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-ApplicationUserDeviceMapsRead {
@@ -748,7 +748,7 @@ function Idm-ApplicationUserDeviceMapsRead {
     )
 
     $Class = "ApplicationUserDeviceMap"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -792,7 +792,7 @@ function Idm-ApplicationUserDeviceMapsRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-LinesRead {
@@ -802,7 +802,7 @@ function Idm-LinesRead {
         [string] $FunctionParams
     )
     $Class = "Line"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -852,7 +852,7 @@ function Idm-LinesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-LinesUpdate {
@@ -864,7 +864,7 @@ function Idm-LinesUpdate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -904,9 +904,9 @@ function Idm-LinesUpdate {
                 </ns:updateLine>
             </soapenv:Body>
             </soapenv:Envelope>' -f $system_params.version, $function_params.uuid, $function_params.description, $function_params.alertingName, $function_params.asciiAlertingName
-            Log info "Log params"   
-            Log info ($SystemParams)
-            Log info "Log params done"   
+            Log verbose "Log params"   
+            Log verbose ($SystemParams)
+            Log verbose "Log params done"   
             $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "updateLine" -SoapBody $xmlRequest
   
             foreach($item in $response.Envelope.Body.updateLineResponse.return.row )
@@ -915,7 +915,7 @@ function Idm-LinesUpdate {
             }
             $rv = $true;
             LogIO info "LinesUpdate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -924,7 +924,7 @@ function Idm-LinesUpdate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-CallingSearchSpacesRead {
@@ -935,7 +935,7 @@ function Idm-CallingSearchSpacesRead {
     )
 
     $Class = "CallingSearchSpace"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -984,7 +984,7 @@ function Idm-CallingSearchSpacesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-CommonPhoneConfigRead {
@@ -994,7 +994,7 @@ function Idm-CommonPhoneConfigRead {
         [string] $FunctionParams
     )
     $Class = "CommonPhoneConfig"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1051,7 +1051,7 @@ function Idm-CommonPhoneConfigRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-DevicesRead {
@@ -1062,7 +1062,7 @@ function Idm-DevicesRead {
     )
 
     $Class = "Device"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1106,7 +1106,7 @@ function Idm-DevicesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-DevicePoolsRead {
@@ -1117,7 +1117,7 @@ function Idm-DevicePoolsRead {
     )
 
     $Class = "DevicePool"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1218,7 +1218,7 @@ function Idm-DevicePoolsRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-EndUsersRead {
@@ -1229,7 +1229,7 @@ function Idm-EndUsersRead {
     )
 
     $Class = "EndUser"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1292,7 +1292,7 @@ function Idm-EndUsersRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-EndUsersCreate {
@@ -1304,7 +1304,7 @@ function Idm-EndUsersCreate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -1353,7 +1353,7 @@ function Idm-EndUsersCreate {
             }
             $rv = $true;
             LogIO info "EndUsersCreate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -1362,7 +1362,7 @@ function Idm-EndUsersCreate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-EndUsersUpdate {
@@ -1374,7 +1374,7 @@ function Idm-EndUsersUpdate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -1436,7 +1436,7 @@ function Idm-EndUsersUpdate {
             }
             $rv = $true;
             LogIO info "EndUsersUpdate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -1445,7 +1445,7 @@ function Idm-EndUsersUpdate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-EndUserDevicesRead {
@@ -1456,7 +1456,7 @@ function Idm-EndUserDevicesRead {
     )
 
     $Class = "EndUserDevice"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1508,7 +1508,7 @@ function Idm-EndUserDevicesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-EndUserDeviceMapsRead {
@@ -1519,7 +1519,7 @@ function Idm-EndUserDeviceMapsRead {
     )
 
     $Class = "EndUserDeviceMap"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1563,7 +1563,7 @@ function Idm-EndUserDeviceMapsRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-EndUserDeviceMapsCreate {
@@ -1575,7 +1575,7 @@ function Idm-EndUserDeviceMapsCreate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -1618,7 +1618,7 @@ function Idm-EndUserDeviceMapsCreate {
                 $response = Open-CiscoUnifiedCMConnection -SystemParams $system_params -FunctionParams $function_params -SoapAction "executeSQLUpdate" -SoapBody $xmlRequest
     
                 LogIO info "EndUserDeviceMapsRemoveOwners" -Out $rv
-                Log info ($function_params | ConvertTo-Json)
+                Log verbose ($function_params | ConvertTo-Json)
 
             }
 
@@ -1640,7 +1640,7 @@ function Idm-EndUserDeviceMapsCreate {
             }
             $rv = $true;
             LogIO info "EndUserDeviceMapsCreate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -1649,7 +1649,7 @@ function Idm-EndUserDeviceMapsCreate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-EndUserDeviceMapsDelete {
@@ -1661,7 +1661,7 @@ function Idm-EndUserDeviceMapsDelete {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -1700,7 +1700,7 @@ function Idm-EndUserDeviceMapsDelete {
   
             $rv = $true;
             LogIO info "EndUserDeviceMapsDelete" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -1709,7 +1709,7 @@ function Idm-EndUserDeviceMapsDelete {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-LocationsRead {
@@ -1720,7 +1720,7 @@ function Idm-LocationsRead {
     )
 
     $Class = "Location"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1773,7 +1773,7 @@ function Idm-LocationsRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-MediaResourceGroupsRead {
@@ -1784,7 +1784,7 @@ function Idm-MediaResourceGroupsRead {
     )
 
     $Class = "MediaResourceGroup"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1835,7 +1835,7 @@ function Idm-MediaResourceGroupsRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-MohAudioSourcesRead {
@@ -1846,7 +1846,7 @@ function Idm-MohAudioSourcesRead {
     )
 
     $Class = "MohAudioSource"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1904,7 +1904,7 @@ function Idm-MohAudioSourcesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhonesRead {
@@ -1915,7 +1915,7 @@ function Idm-PhonesRead {
     )
 
     $Class = "Phone"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -1969,7 +1969,7 @@ function Idm-PhonesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhonesCreate {
@@ -1981,7 +1981,7 @@ function Idm-PhonesCreate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -2088,7 +2088,7 @@ function Idm-PhonesCreate {
             }
             $rv = $true;
             LogIO info "PhonesCreate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -2097,7 +2097,7 @@ function Idm-PhonesCreate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhonesUpdate {
@@ -2109,7 +2109,7 @@ function Idm-PhonesUpdate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -2164,7 +2164,7 @@ function Idm-PhonesUpdate {
             }
             $rv = $true;
             LogIO info "PhonesUpdate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -2173,7 +2173,7 @@ function Idm-PhonesUpdate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhonesDelete {
@@ -2185,7 +2185,7 @@ function Idm-PhonesDelete {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -2229,7 +2229,7 @@ function Idm-PhonesDelete {
             }
             $rv = $true;
             LogIO info "PhonesDelete" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -2238,7 +2238,7 @@ function Idm-PhonesDelete {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhoneLinesRead {
@@ -2249,7 +2249,7 @@ function Idm-PhoneLinesRead {
     )
 
     $Class = "PhoneLine"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -2270,7 +2270,7 @@ function Idm-PhoneLinesRead {
         $properties = @($key) + @($properties | Where-Object { $_ -ne $key })
 
         try { 
-                Log info "Gathering phones for line retrieval"
+                Log verbose "Gathering phones for line retrieval"
                 # Get Phone UUID's
                 $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
                 <soapenv:Header/>
@@ -2303,7 +2303,7 @@ function Idm-PhoneLinesRead {
                     try {
                     if(($_i++ % 100) -eq 0)
                     {
-                        Log info ('Retrieving Phone Lines: ({0}/{1}) {2:n1} s...' -f $_i,$phoneList.count,((Get-Date) - $now).TotalSeconds)
+                        Log verbose ('Retrieving Phone Lines: ({0}/{1}) {2:n1} s...' -f $_i,$phoneList.count,((Get-Date) - $now).TotalSeconds)
                     }
                     
                     $xmlRequest = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://www.cisco.com/AXL/API/{0}">
@@ -2366,7 +2366,7 @@ function Idm-PhoneLinesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhoneLinesCreate {
@@ -2378,7 +2378,7 @@ function Idm-PhoneLinesCreate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -2440,7 +2440,7 @@ function Idm-PhoneLinesCreate {
             }
             $rv = $true;
             LogIO info "PhoneLinesCreate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -2449,7 +2449,7 @@ function Idm-PhoneLinesCreate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhoneLinesUpdate {
@@ -2461,7 +2461,7 @@ function Idm-PhoneLinesUpdate {
         [string] $FunctionParams
     )
 
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
         #
@@ -2546,7 +2546,7 @@ function Idm-PhoneLinesUpdate {
             }
             $rv = $true;
             LogIO info "PhoneLinesUpdate" -Out $rv
-            Log info ($function_params | ConvertTo-Json)
+            Log verbose ($function_params | ConvertTo-Json)
         }
         catch {
             Log error "Failed: $_"
@@ -2555,7 +2555,7 @@ function Idm-PhoneLinesUpdate {
         
         
     }
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-PhoneTemplatesRead {
@@ -2566,7 +2566,7 @@ function Idm-PhoneTemplatesRead {
     )
 
     $Class = "PhoneTemplate"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -2610,7 +2610,7 @@ function Idm-PhoneTemplatesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-ProductsRead {
@@ -2621,7 +2621,7 @@ function Idm-ProductsRead {
     )
 
     $Class = "Product"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -2665,7 +2665,7 @@ function Idm-ProductsRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-SipProfilesRead {
@@ -2676,7 +2676,7 @@ function Idm-SipProfilesRead {
     )
 
     $Class = "SipProfile"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -2803,7 +2803,7 @@ function Idm-SipProfilesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Idm-UniversalDeviceTemplatesRead {
@@ -2814,7 +2814,7 @@ function Idm-UniversalDeviceTemplatesRead {
     )
 
     $Class = "UniversalDeviceTemplate"
-    Log info "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
+    Log verbose "-GetMeta=$GetMeta -SystemParams='$SystemParams' -FunctionParams='$FunctionParams'"
 
     if ($GetMeta) {
 
@@ -2966,7 +2966,7 @@ function Idm-UniversalDeviceTemplatesRead {
             }
     }
 
-    Log info "Done"
+    Log verbose "Done"
 }
 
 function Open-CiscoUnifiedCMConnection {
@@ -2993,7 +2993,7 @@ function Open-CiscoUnifiedCMConnection {
 
     if($SystemParams.use_proxy)
     {
-        Log info "Proxy enabled"
+        Log verbose "Proxy enabled"
         add-type @"
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -3014,7 +3014,7 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
         
         if($SystemParams.use_proxy_credentials)
         {
-            Log info "Using proxy authentication"
+            Log verbose "Using proxy authentication"
             $WebClient.proxy.Credentials = New-Object System.Net.NetworkCredential($SystemParams.proxy_username, (ConvertTo-SecureString $SystemParams.proxy_password -AsPlainText -Force) )
         }
     }
