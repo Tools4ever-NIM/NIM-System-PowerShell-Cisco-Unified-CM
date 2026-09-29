@@ -1,5 +1,7 @@
 # Cisco Unified CM
 
+Read the [Cisco Unified CM integration documentation](https://docs.nimsuite.com/en/integrations/cisco-unified-cm) for connector details and related guides.
+
 <img src="https://github.com/Tools4ever-NIM/NIM-System-PowerShell-Cisco-Unified-CM/assets/24281600/c26ec42d-14b5-4c1c-a5d4-71cc696294ce" width="256px" />
 
 
